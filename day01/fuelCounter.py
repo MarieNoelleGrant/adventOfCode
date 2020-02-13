@@ -1,6 +1,6 @@
 import math
 
-inputFile = open("input_day1.txt", "r")
+# inputFile = open("input_day1.txt", "r")
 
 
 def calc_fuel_needed(module_mass):
@@ -9,8 +9,14 @@ def calc_fuel_needed(module_mass):
 
 
 total_fuel = 0
-for line in inputFile:
-    fuel_per_module = calc_fuel_needed(line)
-    total_fuel += fuel_per_module
+
+# *** Pour refermer le fichier après utilisation :
+with open("input_day1.txt", "r") as masses:
+    for line in masses:
+        fuel_per_module = calc_fuel_needed(line)
+        total_fuel += fuel_per_module
+
+# *** Ou encore :
+# inputFile.close()
 
 print("The total fuel count is: " + str(total_fuel))

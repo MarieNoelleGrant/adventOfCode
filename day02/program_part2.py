@@ -1,30 +1,31 @@
 # PART TWO ------------------------------------------------------------------------------
-inputFile = open("input_day2.txt", "r")
 program = list()
 
-for line in inputFile:
-    number = ""
-    for word in line:
-        if word != "," and word != "\n":
-            number += word
-        else:
-            program.append(int(number))
-            number = ""
+with open("input_day2.txt", "r") as inputFile:
+    for line in inputFile:
+        number = ""
+        for word in line:
+            if word != "," and word != "\n":
+                number += word
+            else:
+                program.append(int(number))
+                number = ""
 
 
 def rebuilt_intcode_program(program):
-    initial_position = 0
 
     for i_noun in range(100):
         for i_verb in range(100):
+            # On duplique le programme initial (pour toujours partir à neuf)
             program_double = program[:]
+            # On remplace les valeurs des positions 1 et 2 par les variables des compteurs
+            # Les boucles imbriquées nous donneront toutes les combinaisons possibles entre 0 et 99
             program_double[1] = i_noun
             program_double[2] = i_verb
-            # print(program_double)
 
             initial_position = 0
 
-            while initial_position < len(program_double)-4:
+            while initial_position < len(program_double)-3:
                 optcode = program_double[initial_position]
                 input_value1 = program_double[program_double[initial_position + 1]]
                 input_value2 = program_double[program_double[initial_position + 2]]
@@ -40,6 +41,7 @@ def rebuilt_intcode_program(program):
                     initial_position += 4
                 elif optcode == 99:
                     # Time to end the program
+                    # print("We've met a 99! initial_position = {}".format(initial_position))
                     break
                 else:
                     # ERROR!
@@ -49,8 +51,7 @@ def rebuilt_intcode_program(program):
                 return list({i_noun, i_verb})
 
 
-print(str(rebuilt_intcode_program(program)))
-
 noun_verb_couple = rebuilt_intcode_program(program)
-answer = 100 * noun_verb_couple[0] + noun_verb_couple[1]
+print(noun_verb_couple)
+answer = 100 * noun_verb_couple[1] + noun_verb_couple[0]
 print(answer)
