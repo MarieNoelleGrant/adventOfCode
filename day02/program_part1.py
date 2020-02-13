@@ -6,19 +6,19 @@
 # Le copy fonctionne comme le slice, mais seulement dans python 3
 
 # *** Pour utiliser le fichier texte telquel ********************************************
-inputFile = open("input_day2.txt", "r")
 program = list()
 fresh_program = list()
 
-for line in inputFile:
-    number = ""
-    for word in line:
-        if word != "," and word != "\n":
-            number += word
-        else:
-            program.append(int(number))
-            fresh_program.append(int(number))
-            number = ""
+with open("input_day2.txt", "r") as inputFile:
+    for line in inputFile:
+        number = ""
+        for word in line:
+            if word != "," and word != "\n":
+                number += word
+            else:
+                program.append(int(number))
+                fresh_program.append(int(number))
+                number = ""
 
 # *** Pour modifier les chiffres à la première et deuxième position *********************
 program[1] = 12
@@ -53,6 +53,3 @@ def rebuilt_intcode_program(program):
 
 
 print(str(rebuilt_intcode_program(program)))
-
-
-
