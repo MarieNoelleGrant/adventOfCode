@@ -17,5 +17,6 @@ class TestFuelCalc(unittest.TestCase):
         self.assertEqual(fuelCounter_part2.calc_fuel_needed(1969), 966)
         self.assertEqual(fuelCounter_part2.calc_fuel_needed(100756), 50346)
 
+
 if __name__ == '__main__':
     unittest.main()

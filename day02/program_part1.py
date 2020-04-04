@@ -20,10 +20,6 @@ with open("input_day2.txt", "r") as inputFile:
                 fresh_program.append(int(number))
                 number = ""
 
-# *** Pour modifier les chiffres à la première et deuxième position *********************
-program[1] = 12
-program[2] = 2
-
 
 def rebuilt_intcode_program(program):
     initial_position = 0
