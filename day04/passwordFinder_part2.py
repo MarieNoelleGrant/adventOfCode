@@ -10,10 +10,8 @@ def check_if_same_number(*args):
     if args.count(args[0]) != 3:
         sum = 0
         multiplication = args[0] * len(args)
-
         for arg in args:
             sum += arg
-
         if sum == multiplication:
             check = True
     else:
@@ -77,9 +75,11 @@ def calculate_possibilities(lower_limit, higher_limit):
                             # *** On ajoute le chiffre à une liste de chiffres trouvés deux fois, ci ce n'est déjà fait :
                             if number not in number_found_twice:
                                 number_found_twice.append(number)
-                        # 3.1.2 Si non, si le chiffre ne correspond au chiffre qu'on ne veut pas répéter :
+                        # 3.1.2 Si non, si le chiffre ne correspond au chiffre qu'on ne veut pas répéter, il doit faire partie d'une suite de trois :
                         elif len(number_found_twice) != 0 and number_found_twice[int_same_number] == number_to_not_repeat:
+                            # *** On remet la valeur du 2 chiffres identiques à zéro:
                             same_number_twice = False
+                            # *** Si le chiffre à ne pas répéter est différent du chiffre en cours, on augmente de un l'indez du tableau à parcourrir:
                             if number != number_to_not_repeat:
                                 int_same_number += 1
 
@@ -100,6 +100,7 @@ def calculate_possibilities(lower_limit, higher_limit):
 
 
 list_possible_passwords = calculate_possibilities(254032, 789860)
+
 reponse = len(list_possible_passwords)
 print(list_possible_passwords)
 print("Le nombre de mots de passe possibles est : " + str(reponse))
