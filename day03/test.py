@@ -1,8 +1,5 @@
-# from fuelCounter import calc_fuel_needed
 import unittest
-# *** Je ne sais pas pourquoi il ne reconnaît pas mon module, mais ça fonctionne quand même.
 from wireControl_part1 import calcul_manhattan_distance, create_coordinates, creation_intersections
-# import computerEmulation
 
 
 class TestDistanceManhattan(unittest.TestCase):
