@@ -1,33 +1,30 @@
-# PART ONE -------------------------------------------------------------------------------
-#   - Ajout des parameter modes + notation alternative du optcode si paramètres
-#   - Ajout de deux nouveaux optcodes (3 et 4)
-
-# PART TWO -------------------------------------------------------------------------------
-#   - Ajout de quatre nouveaux optcode (5, 6, 7 et 8)
-# *** Pour utiliser le fichier texte telquel ********************************************
-
-program = list()
-fresh_program = list()
-print('hi')
-
-id_to_verify = int(input('Please enter the ID of the system to test  --->  '))
-if id_to_verify == 1 or id_to_verify == 5:
-    with open("input_day5.txt", "r") as inputFile:
-        for line in inputFile:
-            number = ""
-            for word in line:
-                if word != "," and word != "\n":
-                    number += word
-                else:
-                    program.append(int(number))
-                    fresh_program.append(int(number))
-                    number = ""
+from os import path
 
 
-def test_program(program):
+def create_program(text_file):
+    program = list()
+    if path.exists(text_file):
+        with open(text_file, "r") as inputFile:
+            for line in inputFile:
+                number = ""
+                for word in line:
+                    if word != "," and word != "\n":
+                        number += word
+                    else:
+                        program.append(int(number))
+                        number = ""
+    else:
+        program = text_file
+    return program
+
+
+def test_program(program, *args):
     initial_position = 0
+    # Variable si vérification des amp (day07)
+    phase_1_done = False
     # Variable pour les tests seulement
     number_to_test = 9999
+
     while initial_position < len(program) - 1:
         optcode = program[initial_position]
         parameter_list = list()
@@ -50,6 +47,7 @@ def test_program(program):
             if len(parameter_list) != 0 and parameter_list[0] == 1:
                 input_value1 = int(program[initial_position + 1])
             else:
+                # print(program[initial_position + 1])
                 abs_position = abs(program[initial_position + 1])
                 input_value1 = int(program[abs_position])
 
@@ -112,8 +110,20 @@ def test_program(program):
         # OPTCODE 3 --------------------------------------------------------------------------------
         elif optcode == 3:
             output_position = program[initial_position + 1]
-            new_input = input("Please enter new number to be memorised: ---> ")
+            if args:
+                current_phase_setting = int(args[0])
+                amp_input_signal = int(args[1])
+                if not phase_1_done:
+                    new_input = current_phase_setting
+                    phase_1_done = True
+                else:
+                    new_input = amp_input_signal
+                    # print(new_input)
+            else:
+                new_input = input("Please enter new number to be memorised: ---> ")
+
             program[output_position] = int(new_input)
+            # print([program[output_position]])
             # Add jump to next instruction
             initial_position += 2
 
@@ -125,7 +135,7 @@ def test_program(program):
             else:
                 number_to_output = int(program[program[initial_position + 1]])
             number_to_test = number_to_output
-            print(number_to_output)
+            # print([number_to_test])
             # Add jump to next instruction
             initial_position += 2
 
@@ -140,6 +150,4 @@ def test_program(program):
             break
 
     # return program
-    # return number_to_test
-
-test_program(program)
+    return number_to_test
