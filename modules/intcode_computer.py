@@ -1,5 +1,8 @@
 from os import path
 
+# positions_memory = [0, 0, 0, 0, 0]
+# phase_1_done = [False, False, False, False, False]
+
 
 def create_program(text_file):
     program = list()
@@ -19,13 +22,21 @@ def create_program(text_file):
 
 
 def test_program(program, *args):
-    initial_position = 0
-    # Variable si vérification des amp (day07)
-    phase_1_done = False
-    # Variable pour les tests seulement
-    number_to_test = 9999
+    if args:
+        initial_position = args[3]
+    else:
+        initial_position = 0
 
-    while initial_position < len(program) - 1:
+    # Variable si vérification des amp (day07)
+    skip_to_next_program = False
+    all_done = False
+
+    number_to_test = 0
+
+    while initial_position < len(program):
+        if skip_to_next_program:
+            break
+
         optcode = program[initial_position]
         parameter_list = list()
 
@@ -47,7 +58,6 @@ def test_program(program, *args):
             if len(parameter_list) != 0 and parameter_list[0] == 1:
                 input_value1 = int(program[initial_position + 1])
             else:
-                # print(program[initial_position + 1])
                 abs_position = abs(program[initial_position + 1])
                 input_value1 = int(program[abs_position])
 
@@ -62,28 +72,34 @@ def test_program(program, *args):
                 output_position = program[initial_position + 3]
                 # OPTCODE 1 --------------------------------------------------------------------------------
                 if optcode == 1:
+                    # print("optcode 1 -> adding both values")
                     program[output_position] = input_value1 + input_value2
 
                 # OPTCODE 2 --------------------------------------------------------------------------------
                 elif optcode == 2:
+                    # print("optcode 2 -> multiplying both values")
                     program[output_position] = input_value1 * input_value2
 
                 # OPTCODE 7 --------------------------------------------------------------------------------
                 elif optcode == 7:
                     # if first parameter is less than the second, stores 1 in value of output_position
                     if input_value1 < input_value2:
+                        # print("optcode 7 -> 1rst < 2nd, storing 1")
                         program[output_position] = 1
                     # else, stores 0
                     else:
+                        # print("optcode 7 -> 1rst >= 2nd, storing 0")
                         program[output_position] = 0
 
                 # OPTCODE 8 --------------------------------------------------------------------------------
                 elif optcode == 8:
                     # if first parameter is equal to the second, stores 1 in value of output_position
                     if input_value1 == input_value2:
+                        # print("optcode 8 -> equal values, storing 1")
                         program[output_position] = 1
                     # else, stores 0
                     else:
+                        # print("optcode 8 -> values not equal, storing 0")
                         program[output_position] = 0
 
                 # Add jump to next instruction
@@ -93,54 +109,75 @@ def test_program(program, *args):
             elif optcode == 5:
                 # if first parameter is different than 0, changes initial_position to value of 2nd parameter
                 if input_value1 != 0:
-                    initial_position = int(input_value2)
+                    if args:
+                        current_phase_setting = int(args[0])
+                        if current_phase_setting in [5, 6, 7, 8, 9] and number_to_test != 0:
+                            # print("optcode 5 -> leaving this program")
+                            initial_position = int(input_value2)
+                            skip_to_next_program = True
+                        else:
+                            # print("optcode 5 -> change initial position to 2nd parameter, phase between 5 and 9")
+                            initial_position = int(input_value2)
+                    else:
+                        # print("optcode 5 -> change initial position to 2nd parameter")
+                        initial_position = int(input_value2)
                 # else, does nothing (skips ahead equivalent of the optcode + 2 parameters
                 else:
+                    # print("optcode 5 -> initial position += 3")
                     initial_position += 3
 
             # OPTCODE 6 --------------------------------------------------------------------------------
             elif optcode == 6:
                 # if first parameter is equal to 0, changes initial_position to value of 2nd parameter
                 if input_value1 == 0:
+                    # print("optcode 6 -> initial position = 2nd parameter")
                     initial_position = int(input_value2)
                 # else, does nothing (skips ahead equivalent of the optcode + 2 parameters
                 else:
+                    # print("optcode 6 -> initial position += 3")
                     initial_position += 3
 
         # OPTCODE 3 --------------------------------------------------------------------------------
         elif optcode == 3:
+            # print("optcode 3 -> new input")
             output_position = program[initial_position + 1]
             if args:
                 current_phase_setting = int(args[0])
                 amp_input_signal = int(args[1])
-                if not phase_1_done:
+                if initial_position < 4:
                     new_input = current_phase_setting
-                    phase_1_done = True
                 else:
                     new_input = amp_input_signal
-                    # print(new_input)
             else:
                 new_input = input("Please enter new number to be memorised: ---> ")
 
             program[output_position] = int(new_input)
-            # print([program[output_position]])
             # Add jump to next instruction
             initial_position += 2
 
         # OPTCODE 4 --------------------------------------------------------------------------------
         elif optcode == 4:
+            # print("optcode 4 -> output")
             # Vérification de la liste des modes des paramètres pour mette la valeur correspondante
             if len(parameter_list) != 0 and parameter_list[0] == 1:
                 number_to_output = program[initial_position + 1]
             else:
                 number_to_output = int(program[program[initial_position + 1]])
+                # print(f"Number to output : {number_to_output}")
             number_to_test = number_to_output
-            # print([number_to_test])
             # Add jump to next instruction
             initial_position += 2
+            break
 
         # OPTCODE 99 --------------------------------------------------------------------------------
         elif optcode == 99:
+            # print("optcode 99 -> out")
+            if args:
+                number_to_test = args[1]
+                # print(args[2])
+                if args[2] == 4:
+                    all_done = True
+
             # Time to end the program
             break
 
@@ -149,5 +186,6 @@ def test_program(program, *args):
             print("An error has occurred. Input " + str(program[initial_position]) + " is not recognised.")
             break
 
-    # return program
-    return number_to_test
+    # input("The current result is : " + str(number_to_test) + ". Continue? (y) ----> ")
+    # print("out of the program")
+    return number_to_test, all_done, program, initial_position
