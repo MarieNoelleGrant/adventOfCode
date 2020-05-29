@@ -60,7 +60,7 @@ def find_max_thruster_signal(text_file, list_combinations):
 
                 program_number = loops
                 # print(amp_output)
-                amp_output, all_done, new_program, position_memory[loops] = intcode_computer.test_program(all_amp_programs[loops], one_number, amp_output, program_number, position_memory[loops])
+                amp_output, all_done, new_program, position_memory[loops] = intcode_computer.test_program(all_amp_programs[loops], 'day07', one_number, amp_output, program_number, position_memory[loops])
                 # On enregistre le programme en cours pour le réutiliser, si on est dans un contexte de feedback loop (part 2)
                 all_amp_programs[loops] = new_program[:]
                 # print(all_done)
